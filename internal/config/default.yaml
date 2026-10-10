@@ -1,0 +1,122 @@
+# feed-analyze — cấu hình
+# Sửa file này để đổi chủ đề, nguồn tin, model. Kiểm tra nguồn: `fa feeds check`.
+
+# Mô tả bản thân — Claude dùng để cá nhân hoá "vì sao điều này quan trọng với bạn".
+profile: |
+  Kỹ sư phần mềm làm việc tại Việt Nam, quan tâm AI agent (ứng dụng, hạ tầng, thị trường),
+  kinh tế vĩ mô VN & thế giới (lãi suất, tỷ giá, thương mại, chứng khoán), và chính trị/địa chính trị
+  ảnh hưởng tới VN. Muốn hiểu chuỗi nhân quả từ sự kiện cụ thể (vi mô) tới xu hướng lớn (vĩ mô).
+
+timezone: Asia/Ho_Chi_Minh
+
+topics:
+  - id: ai-agent
+    name: AI Agent & AI ứng dụng
+    emoji: "🤖"
+    description: >
+      AI agent, agentic workflow, LLM/model mới, coding agent, công cụ & framework (MCP, SDK),
+      hạ tầng AI (chip, datacenter, điện), doanh nghiệp ứng dụng AI, đầu tư/M&A ngành AI,
+      chính sách & quản trị AI, tác động của AI lên việc làm và năng suất. Bao gồm AI tại Việt Nam.
+    keywords: [AI agent, agentic, LLM, Claude, OpenAI, Gemini, Anthropic, MCP, trí tuệ nhân tạo, Nvidia, GPU, datacenter]
+
+  - id: economy
+    name: Kinh tế & Tài chính
+    emoji: "📈"
+    description: >
+      Kinh tế vĩ mô (GDP, lạm phát, việc làm), chính sách tiền tệ (Fed, NHNN, ECB, BoJ, PBoC),
+      lãi suất, tỷ giá, thương mại & thuế quan, FDI, chuỗi cung ứng, thị trường chứng khoán/trái phiếu/
+      hàng hoá, bất động sản, ngân hàng, doanh nghiệp lớn có tác động hệ thống.
+    keywords: [GDP, lạm phát, lãi suất, tỷ giá, Fed, NHNN, thuế quan, xuất khẩu, FDI, VN-Index, trái phiếu, tariff]
+
+  - id: politics
+    name: Chính trị & Địa chính trị
+    emoji: "🏛️"
+    description: >
+      Chính trị trong nước VN (Đảng, Quốc hội, Chính phủ, nhân sự, luật & nghị định, cải cách bộ máy),
+      quan hệ quốc tế, cạnh tranh Mỹ–Trung, ASEAN, Biển Đông, xung đột & an ninh, bầu cử lớn,
+      trừng phạt, chính sách công nghiệp có tính địa chính trị.
+    keywords: [Quốc hội, Bộ Chính trị, nghị định, luật, Mỹ, Trung Quốc, ASEAN, Biển Đông, bầu cử, trừng phạt, sanctions]
+
+feeds:
+  # ---------- Việt Nam ----------
+  - {name: VnExpress Kinh doanh,   url: "https://vnexpress.net/rss/kinh-doanh.rss",   region: vn, topics: [economy]}
+  - {name: VnExpress Thời sự,      url: "https://vnexpress.net/rss/thoi-su.rss",      region: vn, topics: [politics]}
+  - {name: VnExpress Thế giới,     url: "https://vnexpress.net/rss/the-gioi.rss",     region: vn, topics: [politics]}
+  - {name: VnExpress Số hoá,       url: "https://vnexpress.net/rss/so-hoa.rss",       region: vn, topics: [ai-agent]}
+  - {name: Tuổi Trẻ Kinh doanh,    url: "https://tuoitre.vn/rss/kinh-doanh.rss",      region: vn, topics: [economy]}
+  - {name: Tuổi Trẻ Thời sự,       url: "https://tuoitre.vn/rss/thoi-su.rss",         region: vn, topics: [politics]}
+  - {name: Tuổi Trẻ Công nghệ,     url: "https://tuoitre.vn/rss/cong-nghe.rss",       region: vn, topics: [ai-agent]}
+  - {name: Thanh Niên Kinh tế,     url: "https://thanhnien.vn/rss/kinh-te.rss",       region: vn, topics: [economy]}
+  - {name: Thanh Niên Thế giới,    url: "https://thanhnien.vn/rss/the-gioi.rss",      region: vn, topics: [politics]}
+  - {name: CafeF Vĩ mô,            url: "https://cafef.vn/vi-mo-dau-tu.rss",          region: vn, topics: [economy]}
+  - {name: CafeF Chứng khoán,      url: "https://cafef.vn/thi-truong-chung-khoan.rss", region: vn, topics: [economy]}
+  - {name: CafeF Tài chính QT,     url: "https://cafef.vn/tai-chinh-quoc-te.rss",     region: vn, topics: [economy]}
+  - {name: VnEconomy Tài chính,    url: "https://vneconomy.vn/tai-chinh.rss",         region: vn, topics: [economy]}
+  - {name: VnEconomy KT Thế giới,  url: "https://vneconomy.vn/kinh-te-the-gioi.rss",  region: vn, topics: [economy]}
+  - {name: VietnamNet Chính trị,   url: "https://vietnamnet.vn/rss/chinh-tri.rss",    region: vn, topics: [politics]}
+  - {name: VietnamNet Công nghệ,   url: "https://vietnamnet.vn/rss/cong-nghe.rss",    region: vn, topics: [ai-agent]}
+  - {name: Dân trí Kinh doanh,     url: "https://dantri.com.vn/rss/kinh-doanh.rss",   region: vn, topics: [economy]}
+  - {name: VnExpress International, url: "https://e.vnexpress.net/rss/news.rss",      region: vn, lang: en}
+
+  # ---------- Quốc tế: kinh tế & chính trị ----------
+  - {name: BBC Business,           url: "https://feeds.bbci.co.uk/news/business/rss.xml",  topics: [economy]}
+  - {name: BBC World,              url: "https://feeds.bbci.co.uk/news/world/rss.xml",     topics: [politics]}
+  - {name: BBC Asia,               url: "https://feeds.bbci.co.uk/news/world/asia/rss.xml", topics: [politics]}
+  - {name: NYT Economy,            url: "https://rss.nytimes.com/services/xml/rss/nyt/Economy.xml",  topics: [economy]}
+  - {name: NYT Politics,           url: "https://rss.nytimes.com/services/xml/rss/nyt/Politics.xml", topics: [politics]}
+  - {name: NYT World,              url: "https://rss.nytimes.com/services/xml/rss/nyt/World.xml",    topics: [politics]}
+  - {name: Guardian Economics,     url: "https://www.theguardian.com/business/economics/rss", topics: [economy]}
+  - {name: Guardian World,         url: "https://www.theguardian.com/world/rss",              topics: [politics]}
+  - {name: CNBC Economy,           url: "https://www.cnbc.com/id/20910258/device/rss/rss.html",  topics: [economy]}
+  - {name: CNBC World,             url: "https://www.cnbc.com/id/100727362/device/rss/rss.html", topics: [economy, politics]}
+  - {name: The Economist Finance,  url: "https://www.economist.com/finance-and-economics/rss.xml", topics: [economy]}
+  - {name: The Economist Asia,     url: "https://www.economist.com/asia/rss.xml",                topics: [politics]}
+  - {name: The Diplomat,           url: "https://thediplomat.com/feed/",                 topics: [politics]}
+  - {name: Nikkei Asia,            url: "https://asia.nikkei.com/rss/feed/nar",          topics: [economy, politics]}
+  - {name: SCMP China,             url: "https://www.scmp.com/rss/91/feed",              topics: [politics]}
+  - {name: Al Jazeera,             url: "https://www.aljazeera.com/xml/rss/all.xml",     topics: [politics]}
+  - {name: FT World,               url: "https://www.ft.com/world?format=rss",           topics: [economy, politics]}
+  - {name: WSJ World,              url: "https://feeds.a.dj.com/rss/RSSWorldNews.xml",   topics: [politics]}
+  - {name: Federal Reserve,        url: "https://www.federalreserve.gov/feeds/press_all.xml", topics: [economy]}
+  - {name: Project Syndicate,      url: "https://www.project-syndicate.org/rss",         topics: [economy, politics]}
+
+  # ---------- Quốc tế: AI & agent ----------
+  - {name: Guardian AI,            url: "https://www.theguardian.com/technology/artificialintelligenceai/rss", topics: [ai-agent]}
+  - {name: NYT Technology,         url: "https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml", topics: [ai-agent]}
+  - {name: BBC Technology,         url: "https://feeds.bbci.co.uk/news/technology/rss.xml", topics: [ai-agent]}
+  - {name: TechCrunch AI,          url: "https://techcrunch.com/category/artificial-intelligence/feed/", topics: [ai-agent]}
+  - {name: The Verge AI,           url: "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml", topics: [ai-agent]}
+  - {name: MIT Technology Review,  url: "https://www.technologyreview.com/feed/",        topics: [ai-agent]}
+  - {name: Ars Technica,           url: "https://feeds.arstechnica.com/arstechnica/technology-lab", topics: [ai-agent]}
+  - {name: Simon Willison,         url: "https://simonwillison.net/atom/everything/",    topics: [ai-agent]}
+  - {name: Latent Space,           url: "https://www.latent.space/feed",                 topics: [ai-agent]}
+  - {name: OpenAI News,            url: "https://openai.com/news/rss.xml",               topics: [ai-agent]}
+  - {name: Google DeepMind,        url: "https://deepmind.google/blog/rss.xml",          topics: [ai-agent]}
+  - {name: Hugging Face Blog,      url: "https://huggingface.co/blog/feed.xml",          topics: [ai-agent]}
+  - {name: HN (agent/LLM ≥100pt),  url: "https://hnrss.org/newest?q=agent+OR+LLM&points=100", topics: [ai-agent]}
+
+claude:
+  bin: claude              # đường dẫn Claude Code CLI
+  classify_model: haiku    # phân loại hàng loạt — rẻ & nhanh
+  analyze_model: sonnet    # phân tích từng chủ đề, gom storyline
+  synthesis_model: opus    # tổng hợp liên chủ đề vi mô ↔ vĩ mô
+  deep_model: opus         # `fa deep` / `fa ask` (có WebSearch/WebFetch)
+  batch_size: 30           # số bài mỗi lần gọi phân loại (lớn quá dễ bị model bỏ sót)
+  concurrency: 4           # số lần gọi Claude song song
+  timeout_minutes: 10
+
+fetch:
+  max_age_hours: 48        # bỏ bài cũ hơn
+  max_items_per_feed: 60
+  concurrency: 8
+  timeout_seconds: 25
+
+analyze:
+  window_hours: 30         # cửa sổ tin cho bản tin ngày
+  min_relevance: 0.5       # ngưỡng liên quan để vào phân tích
+  max_articles_per_topic: 100
+  storyline_memory_days: 10  # nhớ storyline cũ bao nhiêu ngày để nối mạch
+
+report:
+  dir: reports             # tương đối với FA_HOME
+  copy_to: []              # vd: ["C:/Users/me/Documents/vault/News"] — chép bản tin .md sang Obsidian

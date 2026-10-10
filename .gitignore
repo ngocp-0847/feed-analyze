@@ -1,0 +1,6 @@
+/bin/
+*.exe
+*.exe.new
+*.db
+*.db-wal
+*.db-shm
