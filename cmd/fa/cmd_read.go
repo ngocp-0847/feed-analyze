@@ -30,6 +30,7 @@ func printJSON(v any) error {
 func cmdBrief(a *app, args []string) error {
 	fs := newFlags("brief")
 	date := fs.String("date", "", "YYYY-MM-DD (mặc định: bản tin mới nhất)")
+	webView := fs.Bool("web", false, "mở bản tin + dashboard trên trình duyệt")
 	if _, err := parseFlags(fs, args); err != nil {
 		return err
 	}
@@ -53,6 +54,9 @@ func cmdBrief(a *app, args []string) error {
 	}
 	if rep == nil {
 		return fmt.Errorf("không có bản tin ngày %s", d)
+	}
+	if *webView {
+		return openPath(a, "/r/"+d)
 	}
 	fmt.Print(rep.Markdown)
 	return nil

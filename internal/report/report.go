@@ -22,6 +22,8 @@ type Input struct {
 type Options struct {
 	// StoryLink trả về URL cho slug (web UI). nil = hiển thị slug dạng `code`.
 	StoryLink func(slug string) string
+	// ChainHTML vẽ chuỗi tác động thành khối HTML (web UI). nil = 1 dòng chữ.
+	ChainHTML func([]analyze.ChainStep) string
 }
 
 // Collect nạp bài viết & storyline được tham chiếu trong bản tin.
@@ -160,7 +162,7 @@ func Markdown(cfg *config.Config, in Input, opt Options) string {
 			if sl.WhyItMatters != "" {
 				fmt.Fprintf(&b, "- **Vì sao quan trọng:** %s\n", sl.WhyItMatters)
 			}
-			if len(sl.CausalChain) > 0 {
+			if len(sl.CausalChain) > 0 && opt.ChainHTML == nil {
 				fmt.Fprintf(&b, "- **Chuỗi tác động:** %s\n", analyze.ChainString(sl.CausalChain))
 			}
 			if sl.VNAngle != "" {
@@ -174,6 +176,9 @@ func Markdown(cfg *config.Config, in Input, opt Options) string {
 			}
 			if src := sources(in, sl.ArticleIDs, 5); src != "" {
 				fmt.Fprintf(&b, "- **Nguồn:** %s\n", src)
+			}
+			if len(sl.CausalChain) > 0 && opt.ChainHTML != nil {
+				fmt.Fprintf(&b, "\n%s\n", opt.ChainHTML(sl.CausalChain))
 			}
 			b.WriteString("\n")
 		}

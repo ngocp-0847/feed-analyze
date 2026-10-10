@@ -120,3 +120,6 @@ analyze:
 report:
   dir: reports             # tương đối với FA_HOME
   copy_to: []              # vd: ["C:/Users/me/Documents/vault/News"] — chép bản tin .md sang Obsidian
+
+web:
+  addr: 127.0.0.1:8787     # địa chỉ cho `fa serve` / `fa open` (chỉ nghe localhost)

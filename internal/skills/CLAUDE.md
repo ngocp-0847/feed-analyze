@@ -12,6 +12,7 @@ Luôn trả lời bằng tiếng Việt.
 |---|---|
 | `fa context [--date D] [--days N]` | Bối cảnh gọn: bản tin tổng hợp + storyline đang hoạt động |
 | `fa brief [--date D]` | Toàn văn bản tin ngày (markdown) |
+| `fa open [dashboard \| YYYY-MM-DD \| deep <slug> \| <slug>]` | Mở bản tin / dashboard chart trên trình duyệt cho người dùng |
 | `fa stories [--topic T] [--days N] [--json]` | Danh sách storyline |
 | `fa story <slug> [--json]` | Timeline + bài viết của 1 storyline |
 | `fa search "<q>" [--topic T] [--days N] [--limit N] [--json]` | Tìm bài (không dấu vẫn khớp) |
@@ -20,7 +21,7 @@ Luôn trả lời bằng tiếng Việt.
 
 ## Lệnh tốn phí / chạy lâu (hỏi người dùng trước)
 
-`fa daily` (quét + phân loại + phân tích), `fa fetch`, `fa classify`, `fa analyze`, `fa deep <slug|id|"câu hỏi">`, `fa ask "<câu hỏi>"`.
+`fa daily` (quét + phân loại + phân tích), `fa fetch`, `fa classify`, `fa analyze`, `fa deep <slug|id|"câu hỏi"> [--open]` (kèm dashboard chart), `fa viz <slug>`, `fa ask "<câu hỏi>"`.
 
 ## Skills
 

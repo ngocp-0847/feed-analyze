@@ -320,7 +320,16 @@ func Deep(ctx context.Context, cfg *config.Config, st *store.Store, r *llm.Runne
 	date := cfg.Today()
 	_ = st.SaveReport(store.Report{Date: date, Kind: "deep:" + slug, Markdown: md, Model: cfg.Claude.DeepModel})
 	path, err := report.WriteFiles(cfg, date+"-"+slug, md, "deep")
-	return md, path, err
+	if err != nil {
+		return md, path, err
+	}
+	if onEvent != nil {
+		onEvent(llm.Event{Kind: "tool", Name: "Dashboard", Text: "rút dữ liệu chart từ báo cáo…"})
+	}
+	if _, verr := SaveViz(ctx, cfg, st, r, date, "deep:"+slug); verr != nil && onEvent != nil {
+		onEvent(llm.Event{Kind: "tool", Name: "Dashboard", Text: "lỗi (chạy lại: fa viz " + slug + "): " + verr.Error()})
+	}
+	return md, path, nil
 }
 
 // Ask trả lời câu hỏi dựa trên kho tin (+ web nếu web=true). Kết quả được ghi ra w.

@@ -64,6 +64,10 @@ type Report struct {
 	CopyTo []string `yaml:"copy_to"`
 }
 
+type Web struct {
+	Addr string `yaml:"addr"`
+}
+
 type Config struct {
 	Profile  string  `yaml:"profile"`
 	Timezone string  `yaml:"timezone"`
@@ -73,6 +77,7 @@ type Config struct {
 	Fetch    Fetch   `yaml:"fetch"`
 	Analyze  Analyze `yaml:"analyze"`
 	Report   Report  `yaml:"report"`
+	Web      Web     `yaml:"web"`
 
 	Home string         `yaml:"-"`
 	Loc  *time.Location `yaml:"-"`
@@ -156,6 +161,7 @@ func (c *Config) applyDefaults() {
 		c.Analyze.MinRelevance = 0.5
 	}
 	defs(&c.Report.Dir, "reports")
+	defs(&c.Web.Addr, "127.0.0.1:8787")
 	if !filepath.IsAbs(c.Report.Dir) {
 		c.Report.Dir = filepath.Join(c.Home, c.Report.Dir)
 	}

@@ -15,6 +15,7 @@ fa context            # bản tin tổng hợp hôm nay + storyline đang hoạt
 
 - Nếu báo chưa có bản tin hôm nay: hỏi người dùng có muốn chạy `fa daily` không (mất vài phút, tốn phí Claude). Trong lúc chờ có thể dùng `fa context --date <hôm qua>`.
 - Cần toàn văn bản tin: `fa brief` (hoặc `fa brief --date 2026-10-09`).
+- Người dùng muốn xem trực quan: `fa open` (bản tin + dashboard ngày), `fa open dashboard` (xu hướng nhiều ngày), `fa open <slug>`.
 
 ## Bước 2 — Trình bày (≤ 5 phút đọc)
 
@@ -34,7 +35,8 @@ fa context            # bản tin tổng hợp hôm nay + storyline đang hoạt
 | Tìm theo từ khoá | `fa search "<từ khoá>" --days 7` | Tìm hỗ trợ không dấu: `lai suat` khớp `lãi suất` |
 | Zoom out (vĩ mô) | dùng skill `micro-macro-lens` | Đi lên chuỗi nhân quả, xu hướng nhiều tuần: `fa stories --days 30` |
 | Zoom in (vi mô) | `fa story`, `fa search` | Đi xuống: doanh nghiệp/người/ngành cụ thể bị ảnh hưởng |
-| Phân tích sâu có nghiên cứu web | skill `news-deep-dive` hoặc `fa deep <slug>` | Báo cáo đầy đủ, lưu lại |
+| Phân tích sâu có nghiên cứu web | skill `news-deep-dive` hoặc `fa deep <slug> --open` | Báo cáo đầy đủ + dashboard chart |
+| Xem chart / dashboard | `fa open dashboard` · `fa open deep <slug>` | Mở trình duyệt, tóm tắt điều chart cho thấy |
 
 ## Nguyên tắc
 

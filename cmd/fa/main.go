@@ -32,20 +32,22 @@ var commands []command
 func init() {
 	commands = []command{
 		{name: "init", args: "[--force]", help: "Tạo config, database và cài skills vào thư mục home", run: cmdInit, noConfig: true},
-		{name: "daily", args: "[--skip-fetch] [--no-analyze] [--log]", help: "Chạy trọn quy trình ngày: fetch → classify → analyze → bản tin", run: cmdDaily},
+		{name: "daily", args: "[--skip-fetch] [--no-analyze] [--log] [--open]", help: "Chạy trọn quy trình ngày: fetch → classify → analyze → bản tin", run: cmdDaily},
 		{name: "fetch", args: "[--feed <tên>]", help: "Quét RSS, lưu bài mới", run: cmdFetch},
 		{name: "classify", args: "[--limit N] [--redo --days N]", help: "Claude phân loại bài chưa phân loại", run: cmdClassify},
-		{name: "analyze", args: "[--date D] [--topic a,b]", help: "Claude phân tích storyline từng chủ đề + tổng hợp liên chủ đề", run: cmdAnalyze},
-		{name: "brief", args: "[--date D]", help: "In bản tin ngày (markdown)", run: cmdBrief},
+		{name: "analyze", args: "[--date D] [--topic a,b] [--open]", help: "Claude phân tích storyline từng chủ đề + tổng hợp liên chủ đề", run: cmdAnalyze},
+		{name: "brief", args: "[--date D] [--web]", help: "In bản tin ngày (markdown); --web mở trên trình duyệt", run: cmdBrief},
+		{name: "open", args: "[dashboard | YYYY-MM-DD | deep [slug] | <slug> | <từ khoá>]", help: "Mở web (tự bật server nền): bản tin, dashboard, storyline, phân tích sâu", run: cmdOpen},
 		{name: "context", args: "[--date D] [--days N]", help: "Bối cảnh gọn cho AI: bản tin + storyline đang hoạt động", run: cmdContext},
 		{name: "stories", args: "[--topic T] [--days N] [--json]", help: "Liệt kê storyline", run: cmdStories},
 		{name: "story", args: "<slug> [--json]", help: "Timeline + bài viết của 1 storyline", run: cmdStory},
 		{name: "search", args: "<từ khoá> [--topic T] [--days N] [--limit N] [--json]", help: "Tìm bài (hỗ trợ không dấu)", run: cmdSearch},
 		{name: "show", args: "<id> [--json]", help: "Chi tiết 1 bài", run: cmdShow},
-		{name: "deep", args: "<slug | id | \"câu hỏi\">", help: "Phân tích sâu có nghiên cứu web, lưu báo cáo", run: cmdDeep},
+		{name: "deep", args: "<slug | id | \"câu hỏi\"> [--open]", help: "Phân tích sâu có nghiên cứu web + dashboard chart", run: cmdDeep},
+		{name: "viz", args: "<slug> [--open] | --all", help: "Dựng (lại) dashboard chart cho báo cáo deep đã có", run: cmdViz},
 		{name: "ask", args: "\"câu hỏi\" [--web]", help: "Hỏi đáp nhanh dựa trên kho tin", run: cmdAsk},
 		{name: "chat", args: "[--continue] [lời nhắn đầu]", help: "Mở phiên Claude Code tương tác với skills bản tin", run: cmdChat},
-		{name: "serve", args: "[--addr :8787] [--open]", help: "Giao diện web đọc bản tin", run: cmdServe},
+		{name: "serve", args: "[--addr A] [--open] [--stop]", help: "Chạy web server (foreground); --stop tắt server nền", run: cmdServe},
 		{name: "feeds", args: "[check] [--url U]", help: "Trạng thái / kiểm tra nguồn RSS", run: cmdFeeds},
 		{name: "topics", help: "Liệt kê chủ đề đang theo dõi", run: cmdTopics},
 		{name: "stats", help: "Thống kê kho tin, chi phí Claude, đường dẫn", run: cmdStats},
@@ -145,7 +147,7 @@ Lệnh:`)
 Bắt đầu nhanh:
   fa init            # tạo config ~/.feed-analyze/config.yaml (sửa chủ đề/nguồn tại đây)
   fa daily           # quét + phân tích → bản tin hôm nay
-  fa brief           # đọc bản tin        |  fa serve --open   # đọc trên trình duyệt
+  fa open            # mở bản tin trên web (tự bật server nền) · fa open dashboard · fa brief --web
   fa chat            # trò chuyện với Claude về tin hôm nay (zoom vi mô ↔ vĩ mô)
   fa schedule install --time 06:30   # tự chạy mỗi sáng`)
 }

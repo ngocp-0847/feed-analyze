@@ -22,7 +22,7 @@ Viết bằng Go, một binary, SQLite thuần Go (không cần CGO), không c�
    └─ tổng hợp (opus): TL;DR, bức tranh vĩ mô, liên kết chéo AI ↔ kinh tế ↔ chính trị,
         tác động tới VN, "với bạn" (theo profile), watchlist, gợi ý đào sâu, góc nhìn ngược
    ▼
- reports/YYYY-MM-DD.md  ·  fa serve (web)  ·  fa chat (Claude Code + skills)  ·  fa deep / fa ask
+ reports/YYYY-MM-DD.md  ·  fa open (web + dashboard chart)  ·  fa chat (Claude Code + skills)  ·  fa deep / fa ask
 ```
 
 ## Cài đặt
@@ -42,8 +42,9 @@ Thư mục dữ liệu: `--home DIR` > `$FA_HOME` > `~/.feed-analyze`.
 
 ```bash
 fa daily                   # fetch → classify → analyze → bản tin (lần đầu ~10–15 phút, sau đó nhanh hơn)
-fa brief                   # đọc bản tin markdown trong terminal
-fa serve --open            # đọc trên trình duyệt: bản tin, storyline, tìm bài, phân tích sâu
+fa open                    # mở bản tin + dashboard trên trình duyệt (tự bật server nền)
+fa brief                   # đọc bản tin markdown trong terminal (fa brief --web = mở web)
+fa daily --open            # chạy xong là mở bản tin trên web luôn
 fa chat                    # mở Claude Code với skills: "hôm nay có gì?", "đào sâu fed-rate-path", "zoom out"
 fa schedule install --time 06:30   # Windows Task Scheduler (Linux/macOS: in dòng crontab)
 ```
@@ -60,8 +61,35 @@ fa schedule install --time 06:30   # Windows Task Scheduler (Linux/macOS: in dò
 | Phân tích sâu có nghiên cứu web | `fa deep <slug>` · `fa deep 123` · `fa deep "AI agent tác động ngành outsource VN"` |
 | Bối cảnh gọn cho AI / pipe | `fa context --days 7` |
 
-`fa deep` dùng WebSearch + WebFetch để đọc bài gốc, xuất báo cáo 10 phần (tóm tắt, timeline, chuỗi tác động, các bên,
+`fa deep` dùng WebSearch + WebFetch để đọc bài gốc, xuất báo cáo 10 phần (kèm **dashboard chart**, xem bên dưới) (tóm tắt, timeline, chuỗi tác động, các bên,
 liên kết chéo, tác động VN, kịch bản có xác suất, chỉ báo, điểm mù, nguồn) vào `reports/deep/`.
+
+## Web & dashboard
+
+`fa open [đích]` bảo đảm web server đang chạy (nếu chưa: bật tiến trình nền, log ở `<home>/logs/serve.log`) rồi mở trình duyệt.
+Tắt server: `fa serve --stop`. Chạy foreground: `fa serve`. Địa chỉ: `web.addr` trong config (mặc định `127.0.0.1:8787`).
+
+| Lệnh | Trang |
+|---|---|
+| `fa open` · `fa open 2026-10-10` | Bản tin ngày: **dashboard ngày** + toàn văn |
+| `fa open dashboard` | **Dashboard xu hướng** 7/14/30/90 ngày |
+| `fa open <slug>` | Timeline 1 storyline, chuỗi tác động dạng sơ đồ |
+| `fa open deep <slug>` · `fa deep … --open` | **Dashboard phân tích sâu** + báo cáo |
+| `fa open "<từ khoá>"` | Tìm bài |
+
+**Dashboard ngày** — KPI · *bản đồ storyline* (tầng vi/trung/vĩ mô × mức quan trọng, kích thước = số bài, màu = chủ đề) ·
+*mạng liên kết chéo* giữa các chủ đề (rê chuột xem cơ chế) · *ma trận tác động tới VN* (kỳ hạn × chiều) · mỗi storyline có sơ đồ chuỗi tác động.
+
+**Dashboard xu hướng** — khối lượng tin theo ngày × chủ đề · tỷ lệ tầng tác động · phạm vi địa lý (VN / quốc tế ↔ VN / quốc tế) ·
+*dòng thời gian storyline* (heatmap câu chuyện × ngày) · thực thể được nhắc nhiều nhất · chi phí Claude.
+
+**Dashboard phân tích sâu** — sau mỗi `fa deep`, Claude rút báo cáo thành dữ liệu có cấu trúc (JSON schema): chỉ số chính ·
+*đồ thị nhân quả phân tầng* vi mô → trung mô → vĩ mô có kênh truyền dẫn · *kịch bản* & xác suất · *tác động tới VN* (−2…+2) ·
+*bản đồ các bên liên quan* (được/mất × ảnh hưởng) · dòng thời gian (dữ kiện / tuyên bố / dự báo) · *chỉ báo cần theo dõi* có trạng thái.
+Báo cáo cũ chưa có dashboard: `fa viz <slug>` hoặc `fa viz --all`.
+
+Mọi chart có tooltip, legend và **bảng dữ liệu** đi kèm; light/dark (nút ◐ hoặc `?theme=dark`); [Apache ECharts](https://echarts.apache.org) 5.5.1 (Apache-2.0) được nhúng sẵn nên chạy offline.
+Bảng màu đã kiểm bằng validator (CVD-safe, đủ tương phản): màu cố định theo chủ đề, ramp một màu cho tầng vi→vĩ mô, cặp phân kỳ xanh/đỏ cho tích cực/tiêu cực.
 
 ## Skills cho Claude Code
 
@@ -104,7 +132,7 @@ internal/classify       phân loại batch
 internal/analyze        storyline theo chủ đề + tổng hợp liên chủ đề
 internal/report         render markdown, ghi file
 internal/research       fa context / deep / ask
-internal/web            fa serve
+internal/web            fa serve / fa open: trang, dashboard, static (ECharts nhúng, viz.js, app.css)
 internal/skills         skills nhúng + CLAUDE.md cho phiên chat
 ```
 

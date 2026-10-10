@@ -62,7 +62,7 @@ func cmdInit(a *app, args []string) error {
 Tiếp theo:
   1. Sửa chủ đề / profile / nguồn:  %s
   2. Chạy bản tin đầu tiên:        fa daily
-  3. Đọc:                          fa brief   |  fa serve --open  |  fa chat
+  3. Đọc:                          fa open (web + dashboard)  |  fa brief  |  fa chat
 `, cp)
 	return nil
 }
@@ -170,6 +170,7 @@ func cmdAnalyze(a *app, args []string) error {
 	fs := newFlags("analyze")
 	date := fs.String("date", "", "ngày bản tin YYYY-MM-DD (mặc định hôm nay)")
 	topics := fs.String("topic", "", "chỉ phân tích các topic (phân cách dấu phẩy)")
+	open := fs.Bool("open", false, "mở bản tin trên trình duyệt khi xong")
 	if _, err := parseFlags(fs, args); err != nil {
 		return err
 	}
@@ -177,7 +178,16 @@ func cmdAnalyze(a *app, args []string) error {
 	if *topics != "" {
 		ts = strings.Split(*topics, ",")
 	}
-	_, err := runAnalyze(a, *date, ts)
+	d := *date
+	if d == "" {
+		d = a.cfg.Today()
+	}
+	path, err := runAnalyze(a, d, ts)
+	if *open && path != "" {
+		if oerr := openPath(a, "/r/"+d); oerr != nil {
+			logf("⚠ không mở được web: %v", oerr)
+		}
+	}
 	return err
 }
 
@@ -217,6 +227,7 @@ func cmdDaily(a *app, args []string) (err error) {
 	skipFetch := fs.Bool("skip-fetch", false, "bỏ bước quét RSS")
 	noAnalyze := fs.Bool("no-analyze", false, "chỉ quét + phân loại")
 	logFile := fs.Bool("log", false, "ghi log vào <home>/logs/ (dùng khi chạy theo lịch)")
+	open := fs.Bool("open", false, "mở bản tin trên trình duyệt khi xong")
 	if _, err := parseFlags(fs, args); err != nil {
 		return err
 	}
@@ -249,7 +260,12 @@ func cmdDaily(a *app, args []string) (err error) {
 	if path != "" {
 		st, _ := a.st.Stats(time.Now().Add(-24 * time.Hour))
 		logf("══ Xong trong %s · chi phí Claude 24h ≈ $%.2f ══", time.Since(start).Round(time.Second), st.Cost24h)
-		logf("Đọc: fa brief  |  fa serve --open  |  fa chat")
+		logf("Đọc: fa open  |  fa brief  |  fa chat")
+		if *open {
+			if oerr := openPath(a, "/r/"+a.cfg.Today()); oerr != nil {
+				logf("⚠ không mở được web: %v", oerr)
+			}
+		}
 	}
 	return err
 }

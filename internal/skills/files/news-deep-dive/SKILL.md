@@ -7,7 +7,7 @@ description: Phân tích sâu một storyline, bài báo hoặc câu hỏi thờ
 
 ## Hai cách chạy
 
-- **Nhanh, không tương tác:** `fa deep <slug | id | "câu hỏi">` — Claude tự nghiên cứu (WebSearch/WebFetch), lưu báo cáo vào `reports/deep/`. Dùng khi người dùng chỉ muốn kết quả.
+- **Nhanh, không tương tác:** `fa deep <slug | id | "câu hỏi"> --open` — Claude tự nghiên cứu (WebSearch/WebFetch), lưu báo cáo vào `reports/deep/`, dựng dashboard chart (chỉ số, đồ thị nhân quả phân tầng, kịch bản, các bên liên quan, tác động VN, chỉ báo) và mở trên trình duyệt. Báo cáo cũ chưa có chart: `fa viz <slug> --open`.
 - **Tương tác (mặc định trong phiên chat):** làm theo quy trình dưới, dừng hỏi người dùng ở các điểm rẽ.
 
 ## Quy trình tương tác

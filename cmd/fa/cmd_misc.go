@@ -3,8 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"net"
-	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -15,45 +13,7 @@ import (
 	"github.com/ngocp-0847/feed-analyze/internal/config"
 	"github.com/ngocp-0847/feed-analyze/internal/llm"
 	"github.com/ngocp-0847/feed-analyze/internal/skills"
-	"github.com/ngocp-0847/feed-analyze/internal/web"
 )
-
-func cmdServe(a *app, args []string) error {
-	fs := newFlags("serve")
-	addr := fs.String("addr", "127.0.0.1:8787", "địa chỉ lắng nghe")
-	open := fs.Bool("open", false, "mở trình duyệt")
-	if _, err := parseFlags(fs, args); err != nil {
-		return err
-	}
-	ln, err := net.Listen("tcp", *addr)
-	if err != nil {
-		return err
-	}
-	url := "http://" + ln.Addr().String()
-	logf("▶ feed-analyze web: %s  (Ctrl+C để dừng)", url)
-	if *open {
-		openBrowser(url)
-	}
-	srv := &http.Server{Handler: web.New(a.cfg, a.st).Handler()}
-	go func() { <-a.ctx.Done(); _ = srv.Close() }()
-	if err := srv.Serve(ln); err != nil && !errors.Is(err, http.ErrServerClosed) {
-		return err
-	}
-	return nil
-}
-
-func openBrowser(url string) {
-	var cmd *exec.Cmd
-	switch runtime.GOOS {
-	case "windows":
-		cmd = exec.Command("rundll32", "url.dll,FileProtocolHandler", url)
-	case "darwin":
-		cmd = exec.Command("open", url)
-	default:
-		cmd = exec.Command("xdg-open", url)
-	}
-	_ = cmd.Start()
-}
 
 func cmdSkills(a *app, args []string) error {
 	fs := newFlags("skills")

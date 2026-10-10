@@ -10,10 +10,12 @@ import (
 
 	"github.com/ngocp-0847/feed-analyze/internal/research"
 	"github.com/ngocp-0847/feed-analyze/internal/skills"
+	"github.com/ngocp-0847/feed-analyze/internal/web"
 )
 
 func cmdDeep(a *app, args []string) error {
 	fs := newFlags("deep")
+	open := fs.Bool("open", false, "mở dashboard + báo cáo trên trình duyệt khi xong")
 	pos, err := parseFlags(fs, args)
 	if err != nil {
 		return err
@@ -34,12 +36,17 @@ func cmdDeep(a *app, args []string) error {
 		return err
 	}
 	logf("\n✓ Lưu: %s (%s)", path, time.Since(start).Round(time.Second))
+	slug := strings.TrimPrefix(strings.TrimSuffix(filepath.Base(path), ".md"), a.cfg.Today()+"-")
+	if *open {
+		return openPath(a, web.DeepURL(a.cfg.Today(), slug))
+	}
+	logf("Xem dashboard: fa open deep %s", slug)
 	return nil
 }
 
 func cmdAsk(a *app, args []string) error {
 	fs := newFlags("ask")
-	web := fs.Bool("web", false, "cho phép nghiên cứu web (WebSearch/WebFetch)")
+	useWeb := fs.Bool("web", false, "cho phép nghiên cứu web (WebSearch/WebFetch)")
 	pos, err := parseFlags(fs, args)
 	if err != nil {
 		return err
@@ -49,7 +56,7 @@ func cmdAsk(a *app, args []string) error {
 	}
 	q := strings.Join(pos, " ")
 	logf("▶ Đang trả lời (%s)…", a.cfg.Claude.DeepModel)
-	ans, err := research.Ask(a.ctx, a.cfg, a.st, a.runner, q, *web, research.PrintEvents(os.Stderr))
+	ans, err := research.Ask(a.ctx, a.cfg, a.st, a.runner, q, *useWeb, research.PrintEvents(os.Stderr))
 	if ans != "" {
 		fmt.Println(strings.TrimSpace(ans))
 	}
@@ -60,6 +67,7 @@ const chatSystem = `Bạn là trợ lý bản tin cá nhân chạy trong thư m�
 Bối cảnh bản tin mới nhất nằm ở file .fa-context.md trong thư mục hiện tại — đọc nó trước khi trả lời câu đầu tiên.
 Dùng các skill: daily-catchup (bản tin 5 phút), news-deep-dive (đào sâu), micro-macro-lens (khung vi mô ↔ vĩ mô), connect-the-dots (xu hướng nhiều ngày), feed-curator (sửa chủ đề/nguồn).
 Lấy dữ liệu qua lệnh: fa context | fa brief | fa stories | fa story <slug> | fa search "<q>" | fa show <id>. Không bịa tin; trích #id/link.
+Khi người dùng muốn xem trực quan: fa open (bản tin + dashboard ngày) | fa open dashboard | fa open <slug> | fa open deep <slug>.
 Hỏi người dùng trước khi chạy lệnh tốn phí: fa daily, fa analyze, fa deep.`
 
 func cmdChat(a *app, args []string) error {
