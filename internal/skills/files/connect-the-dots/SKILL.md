@@ -1,6 +1,6 @@
 ---
 name: connect-the-dots
-description: Tổng hợp xu hướng nhiều ngày/tuần từ feed-analyze — nối các storyline rời rạc thành mô hình lớn, phát hiện tín hiệu yếu, liên kết chéo AI ↔ kinh tế ↔ chính trị, và viết bản review tuần/tháng. Dùng khi người dùng hỏi "tuần này/tháng này có xu hướng gì", "các tin này liên quan nhau thế nào", "bức tranh lớn", "review tuần", "điều gì đang âm thầm thay đổi". Trigger - "review tuần", "weekly", "xu hướng", "bức tranh lớn", "connect the dots", "tín hiệu yếu".
+description: Tổng hợp xu hướng nhiều ngày/tuần từ feed-analyze — nối các storyline rời rạc thành mô hình lớn, phát hiện tín hiệu yếu, liên kết chéo AI ↔ kinh tế ↔ chính trị ↔ an ninh mạng, và viết bản review tuần/tháng. Dùng khi người dùng hỏi "tuần này/tháng này có xu hướng gì", "các tin này liên quan nhau thế nào", "bức tranh lớn", "review tuần", "điều gì đang âm thầm thay đổi". Trigger - "review tuần", "weekly", "xu hướng", "bức tranh lớn", "connect the dots", "tín hiệu yếu".
 ---
 
 # Connect the Dots — tổng hợp xu hướng

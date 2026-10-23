@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"runtime"
+	"strconv"
 	"strings"
 	"time"
 
@@ -160,7 +161,15 @@ func cmdOpen(a *app, args []string) error {
 	return openPath(a, resolveWebPath(a, pos))
 }
 
-// resolveWebPath: "" → bản tin mới nhất · dashboard · YYYY-MM-DD · stories · articles · deep [slug] · <slug storyline> · <từ khoá>.
+func atoiPos(s string) int {
+	n, err := strconv.Atoi(s)
+	if err != nil || n <= 0 {
+		return 0
+	}
+	return n
+}
+
+// resolveWebPath: "" → bản tin mới nhất · dashboard · security [N] · YYYY-MM-DD · stories · articles · deep [slug] · <slug storyline> · <từ khoá>.
 func resolveWebPath(a *app, pos []string) string {
 	if len(pos) == 0 {
 		return "/"
@@ -177,6 +186,11 @@ func resolveWebPath(a *app, pos []string) string {
 		return "/stories"
 	case first == "articles":
 		return "/articles"
+	case first == "security" || first == "sec" || first == "threats":
+		if len(pos) > 1 && atoiPos(pos[1]) > 0 {
+			return fmt.Sprintf("/security/%d", atoiPos(pos[1]))
+		}
+		return "/security"
 	case first == "deep":
 		if len(pos) > 1 {
 			if p := deepPath(a, pos[1]); p != "" {

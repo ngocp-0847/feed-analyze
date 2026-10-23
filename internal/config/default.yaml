@@ -5,7 +5,8 @@
 profile: |
   Kỹ sư phần mềm làm việc tại Việt Nam, quan tâm AI agent (ứng dụng, hạ tầng, thị trường),
   kinh tế vĩ mô VN & thế giới (lãi suất, tỷ giá, thương mại, chứng khoán), và chính trị/địa chính trị
-  ảnh hưởng tới VN. Muốn hiểu chuỗi nhân quả từ sự kiện cụ thể (vi mô) tới xu hướng lớn (vĩ mô).
+  ảnh hưởng tới VN, và an ninh mạng (xu hướng tấn công, kỹ thuật, lỗ hổng) để phòng thủ cho các dự án phần mềm
+  mình xây dựng (web/API, cloud, CI/CD, thư viện mã nguồn mở). Muốn hiểu chuỗi nhân quả từ sự kiện cụ thể (vi mô) tới xu hướng lớn (vĩ mô).
 
 timezone: Asia/Ho_Chi_Minh
 
@@ -37,12 +38,22 @@ topics:
       trừng phạt, chính sách công nghiệp có tính địa chính trị.
     keywords: [Quốc hội, Bộ Chính trị, nghị định, luật, Mỹ, Trung Quốc, ASEAN, Biển Đông, bầu cử, trừng phạt, sanctions]
 
+  - id: security
+    name: An ninh mạng
+    emoji: "🛡️"
+    description: >
+      Tấn công mạng & sự cố an ninh: ransomware, rò rỉ/đánh cắp dữ liệu, DDoS, phishing, lừa đảo trực tuyến,
+      tấn công chuỗi cung ứng phần mềm (npm/PyPI/GitHub/CI), khai thác lỗ hổng & zero-day, CVE nghiêm trọng, bản vá khẩn,
+      nhóm APT/tin tặc nhà nước, malware/infostealer/botnet, chiếm đoạt tài khoản/cloud/OAuth, an ninh AI (prompt injection,
+      lạm dụng LLM), chiến dịch triệt phá & bắt giữ tin tặc, chính sách/luật an ninh mạng, sự cố tại Việt Nam.
+    keywords: [ransomware, data breach, rò rỉ dữ liệu, tấn công mạng, hacker, tin tặc, lỗ hổng, CVE, zero-day, exploit, phishing, lừa đảo, malware, APT, DDoS, supply chain, an ninh mạng]
+
 feeds:
   # ---------- Việt Nam ----------
   - {name: VnExpress Kinh doanh,   url: "https://vnexpress.net/rss/kinh-doanh.rss",   region: vn, topics: [economy]}
   - {name: VnExpress Thời sự,      url: "https://vnexpress.net/rss/thoi-su.rss",      region: vn, topics: [politics]}
   - {name: VnExpress Thế giới,     url: "https://vnexpress.net/rss/the-gioi.rss",     region: vn, topics: [politics]}
-  - {name: VnExpress Số hoá,       url: "https://vnexpress.net/rss/so-hoa.rss",       region: vn, topics: [ai-agent]}
+  - {name: VnExpress Số hoá,       url: "https://vnexpress.net/rss/so-hoa.rss",       region: vn, topics: [ai-agent, security]}
   - {name: Tuổi Trẻ Kinh doanh,    url: "https://tuoitre.vn/rss/kinh-doanh.rss",      region: vn, topics: [economy]}
   - {name: Tuổi Trẻ Thời sự,       url: "https://tuoitre.vn/rss/thoi-su.rss",         region: vn, topics: [politics]}
   - {name: Tuổi Trẻ Công nghệ,     url: "https://tuoitre.vn/rss/cong-nghe.rss",       region: vn, topics: [ai-agent]}
@@ -95,6 +106,28 @@ feeds:
   - {name: Hugging Face Blog,      url: "https://huggingface.co/blog/feed.xml",          topics: [ai-agent]}
   - {name: HN (agent/LLM ≥100pt),  url: "https://hnrss.org/newest?q=agent+OR+LLM&points=100", topics: [ai-agent]}
 
+  # ---------- An ninh mạng ----------
+  - {name: The Hacker News,        url: "https://feeds.feedburner.com/TheHackersNews",   topics: [security]}
+  - {name: SecurityWeek,           url: "https://www.securityweek.com/feed/",            topics: [security]}
+  - {name: Dark Reading,           url: "https://www.darkreading.com/rss.xml",           topics: [security]}
+  - {name: The Record,             url: "https://therecord.media/feed",                  topics: [security]}
+  - {name: Krebs on Security,      url: "https://krebsonsecurity.com/feed/",             topics: [security]}
+  - {name: Help Net Security,      url: "https://www.helpnetsecurity.com/feed/",         topics: [security]}
+  - {name: Cybersecurity Dive,     url: "https://www.cybersecuritydive.com/feeds/news/", topics: [security]}
+  - {name: Schneier on Security,   url: "https://www.schneier.com/feed/atom/",           topics: [security]}
+  - {name: SANS ISC,               url: "https://isc.sans.edu/rssfeed_full.xml",         topics: [security]}
+  - {name: Unit 42,                url: "https://unit42.paloaltonetworks.com/feed/",     topics: [security]}
+  - {name: Cisco Talos,            url: "https://blog.talosintelligence.com/rss/",       topics: [security]}
+  - {name: Google Threat Intel,    url: "https://feeds.feedburner.com/threatintelligence/pvexyqv7v0v", topics: [security]}
+  - {name: Microsoft Security,     url: "https://www.microsoft.com/en-us/security/blog/feed/", topics: [security]}
+  - {name: Securelist,             url: "https://securelist.com/feed/",                  topics: [security]}
+  - {name: ESET WeLiveSecurity,    url: "https://www.welivesecurity.com/en/rss/feed/",   topics: [security]}
+  - {name: HN (security ≥100pt),   url: "https://hnrss.org/newest?q=security+OR+vulnerability+OR+breach+OR+ransomware&points=100", topics: [security]}
+  - {name: Tuổi Trẻ Nhịp sống số,  url: "https://tuoitre.vn/rss/nhip-song-so.rss",       region: vn, topics: [security, ai-agent]}
+  - {name: Thanh Niên Công nghệ,   url: "https://thanhnien.vn/rss/cong-nghe.rss",        region: vn, topics: [security, ai-agent]}
+  - {name: Nhân Dân Công nghệ,     url: "https://nhandan.vn/rss/congnghe.rss",             region: vn, topics: [security, ai-agent]}
+  - {name: Dân trí Công nghệ,      url: "https://dantri.com.vn/rss/cong-nghe.rss",         region: vn, topics: [security, ai-agent]}
+
 claude:
   bin: claude              # đường dẫn Claude Code CLI
   classify_model: haiku    # phân loại hàng loạt — rẻ & nhanh
@@ -123,3 +156,48 @@ report:
 
 web:
   addr: 127.0.0.1:8787     # địa chỉ cho `fa serve` / `fa open` (chỉ nghe localhost)
+
+# Xuất bản công khai (fa publish) — Cloudflare, gói free.
+# Thiết lập 1 lần: npx wrangler login. Sau đó: fa publish (hoặc after_daily: true).
+publish:
+  target: workers          # workers = Workers Static Assets (free, tự tạo domain + DNS + SSL) | pages = Cloudflare Pages
+  project: fa-blog         # tên Worker / Pages project
+  domain: ""               # custom domain trên Cloudflare, vd blog.example.com
+  site_title: "Bản tin vi mô ↔ vĩ mô"
+  description: "Bản tin AI agent, kinh tế, chính trị — Việt Nam & quốc tế — nối sự kiện vi mô với xu hướng vĩ mô, tạo tự động mỗi ngày."
+  days: 90                 # xuất bản bản tin N ngày gần nhất (0 = tất cả)
+  out_dir: site            # thư mục build (tương đối với FA_HOME)
+  branch: main
+  after_daily: false       # true = fa daily tự publish khi xong (dùng với fa schedule)
+  exclude: []              # slug báo cáo deep / storyline KHÔNG công khai, vd [q-cau-hoi-rieng]
+  include_security: false  # true = đưa bản đồ mối đe doạ (/security) lên site công khai (có mục stack dự án của bạn)
+
+# Bản đồ mối đe doạ an ninh mạng (fa sec, fa open security). Dữ liệu: tin topic security (+ nội dung bài gốc),
+# CISA KEV, điểm EPSS (FIRST), hoạt động leak site ransomware (RansomLook). Chạy kèm fa daily khi enabled.
+security:
+  enabled: true
+  topic: security          # topic id ở trên
+  extract_model: sonnet    # trích xuất sự cố, nhóm tấn công, lãnh thổ, ATT&CK, CVE từ từng bài
+  brief_model: opus        # tổng hợp xu hướng + playbook phòng thủ cho dự án
+  batch_size: 8            # số bài mỗi lần gọi trích xuất
+  fulltext: true           # tải bài gốc để có chi tiết kỹ thuật (fallback: tóm tắt RSS)
+  text_chars: 3500
+  kev_url: "https://raw.githubusercontent.com/cisagov/kev-data/develop/known_exploited_vulnerabilities.json"
+  epss: true
+  ransom_url: "https://www.ransomlook.io/api/last/{days}"   # rỗng = tắt
+  backfill_days: 30        # fa sec backfill: lấy cả tin security cũ tới N ngày
+  # Công nghệ trong các dự án của bạn — bản đồ đánh dấu sự cố/CVE chạm tới từng mục, playbook viết riêng cho từng mục.
+  stack:
+    - {name: PHP / Laravel,            match: [php, laravel, composer, wordpress, mod_php]}
+    - {name: Node.js / npm / Next.js,  match: [node.js, nodejs, npm, next.js, nextjs, react, vite, javascript, typescript]}
+    - {name: Python / PyPI / AI agent, match: [python, pypi, pip, litellm, langchain, openai sdk, httpx]}
+    - {name: Go,                       match: [golang, go module, go crypto, crypto/x509, x/net, x/crypto, go toolchain]}
+    - {name: Rust / Tauri,             match: [rust, crates.io, cargo, tauri]}
+    - {name: Docker / container,       match: [docker, container image, container escape, containerd, runc, kubernetes, k8s, docker hub, ghcr]}
+    - {name: "AWS (ECS, Lambda, RDS, S3, IAM)", match: [aws, amazon web services, s3, lambda, iam, ecs, rds, aurora, bedrock, cloudfront, ec2]}
+    - {name: PostgreSQL / Redis-Valkey, match: [postgres, postgresql, redis, valkey]}
+    - {name: GitHub / CI/CD,           match: [github, github actions, gitlab, ci/cd, ci runner, workflow, oauth device]}
+    - {name: Cloudflare,               match: [cloudflare, wrangler]}
+    - {name: Claude / MCP / AI coding agent, match: [claude, anthropic, mcp, ai agent, ai gateway, copilot, cursor, codex, prompt injection]}
+    - {name: "SaaS identity (M365, Slack, OAuth)", match: [microsoft 365, m365, entra, azure ad, okta, slack, oauth, sso]}
+    - {name: Máy dev Windows,          match: [windows, smartscreen, powershell, mshta, clickfix]}

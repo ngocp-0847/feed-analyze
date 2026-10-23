@@ -32,7 +32,7 @@ var commands []command
 func init() {
 	commands = []command{
 		{name: "init", args: "[--force]", help: "Tạo config, database và cài skills vào thư mục home", run: cmdInit, noConfig: true},
-		{name: "daily", args: "[--skip-fetch] [--no-analyze] [--log] [--open]", help: "Chạy trọn quy trình ngày: fetch → classify → analyze → bản tin", run: cmdDaily},
+		{name: "daily", args: "[--skip-fetch] [--no-analyze] [--log] [--open] [--publish]", help: "Chạy trọn quy trình ngày: fetch → classify → analyze → bản tin", run: cmdDaily},
 		{name: "fetch", args: "[--feed <tên>]", help: "Quét RSS, lưu bài mới", run: cmdFetch},
 		{name: "classify", args: "[--limit N] [--redo --days N]", help: "Claude phân loại bài chưa phân loại", run: cmdClassify},
 		{name: "analyze", args: "[--date D] [--topic a,b] [--open]", help: "Claude phân tích storyline từng chủ đề + tổng hợp liên chủ đề", run: cmdAnalyze},
@@ -45,9 +45,11 @@ func init() {
 		{name: "show", args: "<id> [--json]", help: "Chi tiết 1 bài", run: cmdShow},
 		{name: "deep", args: "<slug | id | \"câu hỏi\"> [--open]", help: "Phân tích sâu có nghiên cứu web + dashboard chart", run: cmdDeep},
 		{name: "viz", args: "<slug> [--open] | --all", help: "Dựng (lại) dashboard chart cho báo cáo deep đã có", run: cmdViz},
+		{name: "sec", args: "[status | update | backfill | extract | sources | brief] [--days N] [--open]", help: "An ninh mạng: bản đồ mối đe doạ, xu hướng tấn công, playbook phòng thủ", run: cmdSec},
 		{name: "ask", args: "\"câu hỏi\" [--web]", help: "Hỏi đáp nhanh dựa trên kho tin", run: cmdAsk},
 		{name: "chat", args: "[--continue] [lời nhắn đầu]", help: "Mở phiên Claude Code tương tác với skills bản tin", run: cmdChat},
 		{name: "serve", args: "[--addr A] [--open] [--stop]", help: "Chạy web server (foreground); --stop tắt server nền", run: cmdServe},
+		{name: "publish", args: "[build | preview | setup | status] [--no-deploy]", help: "Xuất bản site tĩnh công khai lên Cloudflare Pages (free)", run: cmdPublish},
 		{name: "feeds", args: "[check] [--url U]", help: "Trạng thái / kiểm tra nguồn RSS", run: cmdFeeds},
 		{name: "topics", help: "Liệt kê chủ đề đang theo dõi", run: cmdTopics},
 		{name: "stats", help: "Thống kê kho tin, chi phí Claude, đường dẫn", run: cmdStats},
@@ -148,8 +150,10 @@ Bắt đầu nhanh:
   fa init            # tạo config ~/.feed-analyze/config.yaml (sửa chủ đề/nguồn tại đây)
   fa daily           # quét + phân tích → bản tin hôm nay
   fa open            # mở bản tin trên web (tự bật server nền) · fa open dashboard · fa brief --web
+  fa sec backfill --open   # an ninh mạng: dựng bản đồ mối đe doạ 30 ngày · sau đó: fa open security
   fa chat            # trò chuyện với Claude về tin hôm nay (zoom vi mô ↔ vĩ mô)
-  fa schedule install --time 06:30   # tự chạy mỗi sáng`)
+  fa schedule install --time 06:30   # tự chạy mỗi sáng
+  fa publish setup && fa publish     # đưa bản tin + dashboard lên web công khai (Cloudflare Pages)`)
 }
 
 // parseFlags cho phép flag đứng sau đối số vị trí (vd: fa search "x" --days 7).

@@ -70,7 +70,7 @@ func Open(path string) (*Store, error) {
 		return nil, err
 	}
 	db.SetMaxOpenConns(1) // SQLite: 1 writer — tránh SQLITE_BUSY khi phân loại song song
-	if _, err := db.Exec(schema); err != nil {
+	if _, err := db.Exec(schema + secSchema); err != nil {
 		return nil, fmt.Errorf("khởi tạo schema: %w", err)
 	}
 	return &Store{db: db}, nil

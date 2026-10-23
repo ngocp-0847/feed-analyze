@@ -228,6 +228,7 @@ func cmdDaily(a *app, args []string) (err error) {
 	noAnalyze := fs.Bool("no-analyze", false, "chỉ quét + phân loại")
 	logFile := fs.Bool("log", false, "ghi log vào <home>/logs/ (dùng khi chạy theo lịch)")
 	open := fs.Bool("open", false, "mở bản tin trên trình duyệt khi xong")
+	pub := fs.Bool("publish", false, "xuất bản lên web công khai khi xong (mặc định theo publish.after_daily)")
 	if _, err := parseFlags(fs, args); err != nil {
 		return err
 	}
@@ -253,10 +254,21 @@ func cmdDaily(a *app, args []string) (err error) {
 	if err := runClassify(a, 2000); err != nil {
 		return err
 	}
+	secOn := a.cfg.SecurityOn()
+	if secOn {
+		if serr := runSecUpdate(a, 7, false); serr != nil {
+			logf("⚠ an ninh mạng: %v", serr)
+		}
+	}
 	if *noAnalyze {
 		return nil
 	}
 	path, err := runAnalyze(a, "", nil)
+	if secOn && a.ctx.Err() == nil {
+		if serr := secBrief(a, 30); serr != nil {
+			logf("⚠ tổng hợp an ninh mạng: %v", serr)
+		}
+	}
 	if path != "" {
 		st, _ := a.st.Stats(time.Now().Add(-24 * time.Hour))
 		logf("══ Xong trong %s · chi phí Claude 24h ≈ $%.2f ══", time.Since(start).Round(time.Second), st.Cost24h)
@@ -264,6 +276,13 @@ func cmdDaily(a *app, args []string) (err error) {
 		if *open {
 			if oerr := openPath(a, "/r/"+a.cfg.Today()); oerr != nil {
 				logf("⚠ không mở được web: %v", oerr)
+			}
+		}
+		if *pub || a.cfg.Publish.AfterDaily {
+			if _, perr := buildSite(a); perr != nil {
+				logf("⚠ build site lỗi: %v", perr)
+			} else if _, perr := deploySite(a); perr != nil {
+				logf("⚠ publish lỗi: %v", perr)
 			}
 		}
 	}

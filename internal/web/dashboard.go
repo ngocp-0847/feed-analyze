@@ -161,7 +161,11 @@ func (s *Server) dailyDash(d *analyze.Daily, in report.Input) string {
 	kpi(&b, "Bài liên quan được phân tích", fmt.Sprint(total), "bài", "", "")
 	kpi(&b, "Storyline", fmt.Sprint(len(points)), "", fmt.Sprintf("%d mới · %d leo thang", nw, esc8), "")
 	if d.Synthesis != nil {
-		kpi(&b, "Liên kết chéo chủ đề", fmt.Sprint(len(d.Synthesis.CrossLinks)), "", "", "AI ↔ kinh tế ↔ chính trị")
+		var em []string
+		for _, t := range s.cfg.Topics {
+			em = append(em, t.Emoji)
+		}
+		kpi(&b, "Liên kết chéo chủ đề", fmt.Sprint(len(d.Synthesis.CrossLinks)), "", "", strings.Join(em, " ↔ "))
 		kpi(&b, "Tác động tới VN", fmt.Sprint(len(d.Synthesis.VNImpact)), "lĩnh vực", "", "")
 	}
 	for _, t := range d.Topics {
@@ -245,7 +249,7 @@ func vnMatrix(items []analyze.VNImpact) string {
 // ---------- dashboard xu hướng nhiều ngày ----------
 
 func (s *Server) dashboard(w http.ResponseWriter, r *http.Request) {
-	days := atoi(r.URL.Query().Get("days"), 14)
+	days := atoi(r.PathValue("days"), atoi(r.URL.Query().Get("days"), 14))
 	now := time.Now().In(s.cfg.Loc)
 	start := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, s.cfg.Loc).AddDate(0, 0, -days+1)
 	var dayList []string
@@ -269,13 +273,13 @@ func (s *Server) dashboard(w http.ResponseWriter, r *http.Request) {
 		if n == days {
 			on = " on"
 		}
-		fmt.Fprintf(&b, `<a class="btn%s" href="/dashboard?days=%d">%d ngày</a>`, on, n, n)
+		fmt.Fprintf(&b, `<a class="btn%s" href="%s">%d ngày</a>`, on, s.link(fmt.Sprintf("/dashboard/%d", n)), n)
 	}
 	b.WriteString(`</div>`)
 
 	if len(vol) == 0 && len(sls) == 0 {
-		b.WriteString(`<div class="empty">Chưa có dữ liệu trong khoảng này. Chạy <code>fa daily</code> để quét và phân tích tin.</div>`)
-		s.render(w, "dashboard", "Dashboard", b.String())
+		b.WriteString(`<div class="empty">Chưa có dữ liệu trong khoảng này.</div>`)
+		s.render(w, r, "dashboard", "Dashboard", b.String())
 		return
 	}
 
@@ -307,7 +311,9 @@ func (s *Server) dashboard(w http.ResponseWriter, r *http.Request) {
 	kpi(&b, "Storyline hoạt động", fmt.Sprint(len(sls)), "", fmt.Sprintf("%d kéo dài ≥ 2 ngày", multi), "")
 	kpi(&b, "Đang leo thang", fmt.Sprint(escCount), "storyline", "", "")
 	kpi(&b, "Bản tin đã tạo", fmt.Sprint(nrep), "", "", "")
-	kpi(&b, "Chi phí Claude", fmt.Sprintf("$%.2f", costSum), "", fmt.Sprintf("%d ngày", len(dayList)), "")
+	if !s.public() {
+		kpi(&b, "Chi phí Claude", fmt.Sprintf("$%.2f", costSum), "", fmt.Sprintf("%d ngày", len(dayList)), "")
+	}
 	b.WriteString(`</div>`)
 
 	panel(&b, panelOpt{Title: "Khối lượng tin liên quan theo ngày", Sub: "Số bài có độ liên quan ≥ ngưỡng, theo chủ đề", Viz: "volume",
@@ -371,11 +377,15 @@ func (s *Server) dashboard(w http.ResponseWriter, r *http.Request) {
 	}
 	panel(&b, panelOpt{Title: "Dòng thời gian storyline", Sub: "Mỗi hàng là một câu chuyện; ô = ngày có diễn biến, đậm = quan trọng hơn · bấm để mở",
 		Viz: "storyheat", Data: map[string]any{"days": dayList, "stories": items, "cells": cells}})
-	panel(&b, panelOpt{Width: "half", Title: "Thực thể được nhắc nhiều nhất", Sub: "Số bài liên quan nhắc tới, theo chủ đề · bấm để tìm bài",
-		Viz: "entities", Data: ents, Legend: false})
-	panel(&b, panelOpt{Width: "half", Title: "Chi phí Claude theo ngày", Sub: "USD theo total_cost_usd mà Claude CLI báo", Viz: "cost", Data: cost, Height: 260})
+	if s.public() {
+		panel(&b, panelOpt{Title: "Thực thể được nhắc nhiều nhất", Sub: "Số bài liên quan nhắc tới, theo chủ đề", Viz: "entities", Data: ents})
+	} else {
+		panel(&b, panelOpt{Width: "half", Title: "Thực thể được nhắc nhiều nhất", Sub: "Số bài liên quan nhắc tới, theo chủ đề · bấm để tìm bài",
+			Viz: "entities", Data: ents, Legend: false})
+		panel(&b, panelOpt{Width: "half", Title: "Chi phí Claude theo ngày", Sub: "USD theo total_cost_usd mà Claude CLI báo", Viz: "cost", Data: cost, Height: 260})
+	}
 	b.WriteString(`</div>`)
-	s.render(w, "dashboard", "Dashboard", b.String())
+	s.render(w, r, "dashboard", "Dashboard xu hướng", b.String())
 }
 
 // ---------- dashboard phân tích sâu ----------
@@ -454,4 +464,4 @@ func deepDash(v *research.DeepViz, slug string) string {
 }
 
 // DeepURL trả về đường dẫn trang deep cho date + slug.
-func DeepURL(date, slug string) string { return "/deep/" + date + "/" + url.PathEscape("deep:"+slug) }
+func DeepURL(date, slug string) string { return "/deep/" + date + "/" + url.PathEscape(slug) }

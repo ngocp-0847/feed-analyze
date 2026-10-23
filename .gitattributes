@@ -1,2 +1,4 @@
 * text=auto eol=lf
 *.min.js -diff linguist-vendored
+internal/web/static/world.json -diff linguist-generated
+internal/security/countries.json -diff linguist-generated

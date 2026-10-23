@@ -17,11 +17,13 @@ Luôn trả lời bằng tiếng Việt.
 | `fa story <slug> [--json]` | Timeline + bài viết của 1 storyline |
 | `fa search "<q>" [--topic T] [--days N] [--limit N] [--json]` | Tìm bài (không dấu vẫn khớp) |
 | `fa show <id> [--json]` | Chi tiết 1 bài (link gốc để WebFetch) |
+| `fa sec [--days N] [--json]` | An ninh mạng: mức đe doạ, xu hướng, nhóm tấn công, lãnh thổ, ATT&CK, CVE (KEV/EPSS), playbook phòng thủ |
+| `fa open security` | Mở bản đồ mối đe doạ tương tác (lọc chéo theo nước/nhóm/ngành/kỹ thuật) |
 | `fa topics`, `fa feeds`, `fa stats` | Cấu hình & tình trạng |
 
 ## Lệnh tốn phí / chạy lâu (hỏi người dùng trước)
 
-`fa daily` (quét + phân loại + phân tích), `fa fetch`, `fa classify`, `fa analyze`, `fa deep <slug|id|"câu hỏi"> [--open]` (kèm dashboard chart), `fa viz <slug>`, `fa ask "<câu hỏi>"`.
+`fa daily` (quét + phân loại + phân tích), `fa sec update` / `fa sec brief` / `fa sec backfill`, `fa fetch`, `fa classify`, `fa analyze`, `fa deep <slug|id|"câu hỏi"> [--open]` (kèm dashboard chart), `fa viz <slug>`, `fa ask "<câu hỏi>"`.
 
 ## Skills
 
@@ -29,6 +31,7 @@ Luôn trả lời bằng tiếng Việt.
 - `news-deep-dive` — phân tích sâu 1 storyline/câu hỏi
 - `micro-macro-lens` — khung phân tích tầng & kênh truyền dẫn, bối cảnh VN
 - `connect-the-dots` — xu hướng nhiều ngày, review tuần
+- `threat-map` — an ninh mạng: xu hướng tấn công, lãnh thổ, kỹ thuật ATT&CK, CVE cần vá, playbook phòng thủ dự án
 - `feed-curator` — sửa chủ đề, nguồn RSS, ngưỡng lọc
 
 ## Nguyên tắc

@@ -80,7 +80,7 @@ func TestPages(t *testing.T) {
 	}{
 		{"/dashboard?days=7", []string{`data-viz="volume"`, `data-viz="storyheat"`, `data-viz="entities"`, `data-viz="facet"`, "Bài liên quan"}},
 		{"/r/" + date, []string{`data-viz="storymap"`, `data-viz="network"`, `class="matrix"`, `class="chain"`, "Đọc bản tin"}},
-		{"/deep/" + date + "/deep:vn-rate", []string{`data-viz="causal"`, `data-viz="scenarios"`, "25.830", "cảnh báo", "Báo cáo đầy đủ"}},
+		{"/deep/" + date + "/vn-rate", []string{`data-viz="causal"`, `data-viz="scenarios"`, "25.830", "cảnh báo", "Báo cáo đầy đủ"}},
 		{"/deep", []string{"vn-rate", "📊 có"}},
 		{"/s/vn-rate", []string{`class="chain"`, "tín dụng"}},
 		{"/healthz", []string{HealthToken}},

@@ -21,7 +21,7 @@ fa context            # bản tin tổng hợp hôm nay + storyline đang hoạt
 
 1. **3–5 điều quan trọng nhất hôm nay** — mỗi điều 1–2 câu, ghi tầng (vi mô/trung mô/vĩ mô) và chủ đề.
 2. **Mạch đang tiếp diễn** — storyline có `days_active ≥ 2`: hôm nay có gì *mới* so với trước.
-3. **Một liên kết chéo đáng chú ý** — vd AI ↔ kinh tế ↔ chính trị.
+3. **Một liên kết chéo đáng chú ý** — vd AI ↔ kinh tế ↔ chính trị ↔ an ninh mạng (vd: cạnh tranh Mỹ–Trung → nhóm APT nhắm chuỗi cung ứng → chi phí tuân thủ của doanh nghiệp).
 4. **Tác động tới Việt Nam / tới người dùng** — dựa vào `profile` trong bối cảnh.
 5. Kết thúc bằng **menu đào sâu** (2–4 lựa chọn có slug), ví dụ:
    > Muốn đào sâu: (a) `fed-rate-path` — chuỗi tác động tới tỷ giá VND, (b) `mcp-enterprise-adoption`…

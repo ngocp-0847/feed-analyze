@@ -64,20 +64,63 @@ type Report struct {
 	CopyTo []string `yaml:"copy_to"`
 }
 
+// Publish: xuất bản site tĩnh công khai lên Cloudflare Pages (fa publish).
+type Publish struct {
+	Target      string   `yaml:"target"`      // workers (mặc định: Workers Static Assets, tự gắn domain + DNS) | pages
+	Project     string   `yaml:"project"`     // tên Worker / Pages project
+	Domain      string   `yaml:"domain"`      // custom domain, vd blog.example.com
+	SiteTitle   string   `yaml:"site_title"`  //
+	Description string   `yaml:"description"` //
+	Days        int      `yaml:"days"`        // xuất bản bản tin N ngày gần nhất (0 = tất cả)
+	OutDir      string   `yaml:"out_dir"`     // thư mục build, tương đối với home
+	Branch      string   `yaml:"branch"`      // nhánh production của Pages project
+	AfterDaily  bool     `yaml:"after_daily"` // fa daily tự publish khi xong
+	Exclude     []string `yaml:"exclude"`     // slug báo cáo deep / storyline không xuất bản
+	// IncludeSecurity: đưa bản đồ mối đe doạ (/security) lên site công khai. Mặc định không — trang có mục
+	// "Stack của bạn" + playbook theo công nghệ dự án, công khai là lộ bề mặt tấn công của chính mình.
+	IncludeSecurity bool `yaml:"include_security"`
+}
+
 type Web struct {
 	Addr string `yaml:"addr"`
 }
 
+// Security: bản đồ mối đe doạ an ninh mạng (fa sec) — trích xuất tình báo từ tin security,
+// CISA KEV, EPSS, hoạt động nhóm ransomware.
+type Security struct {
+	Enabled      bool   `yaml:"enabled"`
+	Topic        string `yaml:"topic"`         // topic id dùng cho tin an ninh mạng
+	ExtractModel string `yaml:"extract_model"` // trích xuất sự cố/kỹ thuật/CVE từ bài
+	BriefModel   string `yaml:"brief_model"`   // tổng hợp xu hướng + playbook phòng thủ
+	BatchSize    int    `yaml:"batch_size"`    // số bài mỗi lần gọi trích xuất
+	FullText     bool   `yaml:"fulltext"`      // tải nội dung bài gốc để trích xuất chi tiết kỹ thuật
+	TextChars    int    `yaml:"text_chars"`    // độ dài tối đa nội dung bài gửi cho Claude
+	KEVURL       string `yaml:"kev_url"`       // CISA Known Exploited Vulnerabilities (JSON)
+	EPSS         bool   `yaml:"epss"`          // lấy điểm EPSS (FIRST) cho CVE gần đây
+	RansomURL    string `yaml:"ransom_url"`    // RansomLook: bài đăng mới trên leak site; rỗng = tắt
+	BackfillDays int    `yaml:"backfill_days"` // fa sec backfill: lấy tin security cũ tới N ngày
+	// Stack: công nghệ trong các dự án của người dùng — đánh dấu sự cố/CVE chạm tới stack, cá nhân hoá playbook.
+	Stack []StackItem `yaml:"stack"`
+}
+
+// StackItem: 1 công nghệ + các từ khoá nhận diện trong tin/CVE (không phân biệt hoa thường, khớp theo từ).
+type StackItem struct {
+	Name  string   `yaml:"name"`
+	Match []string `yaml:"match"`
+}
+
 type Config struct {
-	Profile  string  `yaml:"profile"`
-	Timezone string  `yaml:"timezone"`
-	Topics   []Topic `yaml:"topics"`
-	Feeds    []Feed  `yaml:"feeds"`
-	Claude   Claude  `yaml:"claude"`
-	Fetch    Fetch   `yaml:"fetch"`
-	Analyze  Analyze `yaml:"analyze"`
-	Report   Report  `yaml:"report"`
-	Web      Web     `yaml:"web"`
+	Profile  string   `yaml:"profile"`
+	Timezone string   `yaml:"timezone"`
+	Topics   []Topic  `yaml:"topics"`
+	Feeds    []Feed   `yaml:"feeds"`
+	Claude   Claude   `yaml:"claude"`
+	Fetch    Fetch    `yaml:"fetch"`
+	Analyze  Analyze  `yaml:"analyze"`
+	Report   Report   `yaml:"report"`
+	Web      Web      `yaml:"web"`
+	Publish  Publish  `yaml:"publish"`
+	Security Security `yaml:"security"`
 
 	Home string         `yaml:"-"`
 	Loc  *time.Location `yaml:"-"`
@@ -162,6 +205,22 @@ func (c *Config) applyDefaults() {
 	}
 	defs(&c.Report.Dir, "reports")
 	defs(&c.Web.Addr, "127.0.0.1:8787")
+	defs(&c.Publish.Target, "workers")
+	defs(&c.Publish.Project, "fa-blog")
+	defs(&c.Publish.SiteTitle, "Bản tin vi mô ↔ vĩ mô")
+	defs(&c.Publish.Description, "Bản tin AI agent, kinh tế, chính trị — Việt Nam & quốc tế — nối sự kiện vi mô với xu hướng vĩ mô, tạo tự động mỗi ngày.")
+	defs(&c.Publish.OutDir, "site")
+	defs(&c.Publish.Branch, "main")
+	defs(&c.Security.Topic, "security")
+	defs(&c.Security.ExtractModel, "sonnet")
+	defs(&c.Security.BriefModel, c.Claude.SynthesisModel)
+	def(&c.Security.BatchSize, 8)
+	def(&c.Security.TextChars, 3500)
+	def(&c.Security.BackfillDays, 30)
+	defs(&c.Security.KEVURL, "https://raw.githubusercontent.com/cisagov/kev-data/develop/known_exploited_vulnerabilities.json")
+	if !filepath.IsAbs(c.Publish.OutDir) {
+		c.Publish.OutDir = filepath.Join(c.Home, c.Publish.OutDir)
+	}
 	if !filepath.IsAbs(c.Report.Dir) {
 		c.Report.Dir = filepath.Join(c.Home, c.Report.Dir)
 	}
@@ -213,6 +272,12 @@ func (c *Config) Topic(id string) (Topic, bool) {
 		}
 	}
 	return Topic{}, false
+}
+
+// SecurityOn: bật bản đồ mối đe doạ và topic security có trong config.
+func (c *Config) SecurityOn() bool {
+	_, ok := c.Topic(c.Security.Topic)
+	return c.Security.Enabled && ok
 }
 
 func (c *Config) TopicIDs() []string {

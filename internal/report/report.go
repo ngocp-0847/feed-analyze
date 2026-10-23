@@ -24,6 +24,8 @@ type Options struct {
 	StoryLink func(slug string) string
 	// ChainHTML vẽ chuỗi tác động thành khối HTML (web UI). nil = 1 dòng chữ.
 	ChainHTML func([]analyze.ChainStep) string
+	// Public: bản xuất bản công khai — bỏ mục cá nhân ("Với bạn") và gợi ý lệnh CLI.
+	Public bool
 }
 
 // Collect nạp bài viết & storyline được tham chiếu trong bản tin.
@@ -132,7 +134,7 @@ func Markdown(cfg *config.Config, in Input, opt Options) string {
 			}
 			b.WriteString("\n")
 		}
-		if len(s.ForYou) > 0 {
+		if len(s.ForYou) > 0 && !opt.Public {
 			b.WriteString("## 👤 Với bạn\n\n")
 			for _, x := range s.ForYou {
 				fmt.Fprintf(&b, "- %s\n", x)
@@ -211,9 +213,17 @@ func Markdown(cfg *config.Config, in Input, opt Options) string {
 			b.WriteString("\n")
 		}
 		if len(s.DeepDives) > 0 {
-			b.WriteString("## 🔍 Gợi ý đào sâu\n\n")
+			if opt.Public {
+				b.WriteString("## 🔍 Câu hỏi đáng đào sâu\n\n")
+			} else {
+				b.WriteString("## 🔍 Gợi ý đào sâu\n\n")
+			}
 			for _, x := range s.DeepDives {
-				fmt.Fprintf(&b, "- %s — %s  \n  `fa deep %s`\n", slug(x.Slug), x.Question, x.Slug)
+				if opt.Public {
+					fmt.Fprintf(&b, "- %s — %s\n", slug(x.Slug), x.Question)
+				} else {
+					fmt.Fprintf(&b, "- %s — %s  \n  `fa deep %s`\n", slug(x.Slug), x.Question, x.Slug)
+				}
 			}
 			b.WriteString("\n")
 		}
@@ -221,7 +231,9 @@ func Markdown(cfg *config.Config, in Input, opt Options) string {
 			fmt.Fprintf(&b, "## 🤔 Góc nhìn ngược\n\n%s\n\n", strings.TrimSpace(s.Contrarian))
 		}
 	}
-	b.WriteString("---\n_Tạo bởi feed-analyze + Claude. Tóm tắt dựa trên tiêu đề/mô tả RSS — kiểm chứng ở nguồn gốc trước khi ra quyết định._\n")
+	if !opt.Public { // bản public có footer chung của site
+		b.WriteString("---\n_Tạo bởi feed-analyze + Claude. Tóm tắt dựa trên tiêu đề/mô tả RSS — kiểm chứng ở nguồn gốc trước khi ra quyết định._\n")
+	}
 	return b.String()
 }
 

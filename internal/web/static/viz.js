@@ -32,6 +32,8 @@
     for (var i = 0; i < M.topics.length; i++) if (M.topics[i].id === id) return M.topics[i].emoji + " " + M.topics[i].name;
     return id;
   }
+  // site tĩnh công khai: trang lưu dạng thư mục → link kết thúc bằng "/"
+  function pageURL(p) { return meta().public ? p + "/" : p; }
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
   function trunc(s, n) { s = String(s || ""); return s.length > n ? s.slice(0, n - 1) + "…" : s; }
 
@@ -131,7 +133,7 @@
         text: ["quan trọng 5", "1"], textStyle: { color: t.muted, fontSize: 12 }, inRange: { color: [t.seqLo, t.seqHi] } },
       series: [{ type: "heatmap", data: data, itemStyle: { borderColor: t.surface, borderWidth: 2, borderRadius: 3 },
         emphasis: { itemStyle: { borderColor: t.ink, borderWidth: 1 } } }],
-    }), click: function (p) { location.href = "/s/" + encodeURIComponent(ys[p.value[1]]); },
+    }), click: function (p) { location.href = pageURL("/s/" + encodeURIComponent(ys[p.value[1]])); },
       table: { cols: ["Storyline", "Chủ đề", "Ngày", "Trạng thái", "Quan trọng", "Bài"],
         rows: d.cells.map(function (c) { var s = byslug[c.slug] || {}; return [s.title, topicName(s.topic, M), c.date, STATUS_VI[c.status] || c.status, c.importance, c.articles]; }) } };
   };
@@ -151,7 +153,7 @@
       xAxis: merge({ type: "value", minInterval: 1 }, axisStyle(t)),
       yAxis: merge({ type: "category", inverse: true, data: names, axisLabel: { color: t.ink2, fontSize: 12, formatter: function (v) { return trunc(v, 26); } } }, { axisLine: { lineStyle: { color: t.axis } }, axisTick: { show: false } }),
       series: series,
-    }), click: function (p) { location.href = "/articles?days=" + (d.days || 7) + "&q=" + encodeURIComponent(names[p.dataIndex]); },
+    }), click: meta().public ? null : function (p) { location.href = "/articles?days=" + (d.days || 7) + "&q=" + encodeURIComponent(names[p.dataIndex]); },
       table: { cols: ["Thực thể", "Số bài"].concat(series.map(function (s) { return s.name; })),
         rows: d.map(function (e) { return [e.name, e.n].concat(M.topics.map(function (tp) { return e.topics[tp.id] || 0; })); }) } };
   };
@@ -186,7 +188,7 @@
       };
     });
     return { opt: merge(base(t), {
-      legend: legend(t), grid: { left: 40, right: 24, top: 56, bottom: 34 },
+      legend: legend(t), grid: { left: 40, right: el.clientWidth < 640 ? 70 : 24, top: el.clientWidth < 640 ? 80 : 56, bottom: 34 },
       tooltip: merge(base(t).tooltip, { formatter: function (p) {
         return "<b>" + esc(p.data.title) + "</b><br>" + esc(p.seriesName) + " · " + esc(STATUS_VI[p.data.status] || p.data.status) +
           " · quan trọng " + p.data.imp + "/5 · " + p.data.n + " bài<br><span style='color:" + t.ink2 + "'>" + esc(trunc(p.data.summary, 220)) + "</span>";
@@ -197,7 +199,7 @@
       yAxis: merge({ type: "value", min: 0, max: 6, interval: 1, name: "mức quan trọng", nameGap: 12, nameTextStyle: { color: t.muted, fontSize: 12, align: "left" },
         axisLabel: { color: t.muted, formatter: function (v) { return v >= 1 && v <= 5 ? v : ""; } } }, { splitLine: { lineStyle: { color: t.grid } }, axisLine: { show: false, onZero: false }, axisTick: { show: false } }),
       series: series,
-    }), click: function (p) { location.href = "/s/" + encodeURIComponent(p.data.slug); },
+    }), click: function (p) { location.href = pageURL("/s/" + encodeURIComponent(p.data.slug)); },
       table: { cols: ["Storyline", "Chủ đề", "Tầng", "Quan trọng", "Trạng thái", "Bài"],
         rows: d.map(function (s) { return [s.title, topicName(s.topic, M), LEVEL_VI[s.level] || s.level, s.importance, STATUS_VI[s.status] || s.status, s.articles]; }) } };
   };
@@ -225,7 +227,7 @@
         data: nodes,
         links: d.links.map(function (l) { return { source: l.from, target: l.to, mechanism: l.mechanism, implication: l.implication }; }),
       }],
-    }), click: function (p) { if (p.dataType === "node" && p.data.slug) location.href = "/s/" + encodeURIComponent(p.data.slug); },
+    }), click: function (p) { if (p.dataType === "node" && p.data.slug) location.href = pageURL("/s/" + encodeURIComponent(p.data.slug)); },
       legendHTML: M.topics.map(function (tp) { return "<span><i style='background:" + topicColor(t, tp.id, M) + "'></i>" + esc(tp.emoji + " " + tp.name) + "</span>"; }).join("") +
         "<span><i style='background:transparent;border:2px solid " + t.muted + "'></i>khái niệm ngoài storyline</span>",
       table: { cols: ["Từ", "Tới", "Cơ chế", "Hệ quả"], rows: d.links.map(function (l) {
@@ -340,6 +342,10 @@
       "</tbody></table>";
   }
 
+  // API dùng chung cho module khác (vd sec.js — bản đồ mối đe doạ): cùng token, tooltip, bảng; vẽ lại khi đổi theme.
+  window.FAViz = { T: T, meta: meta, base: base, axisStyle: axisStyle, legend: legend, merge: merge, esc: esc, trunc: trunc,
+    tableHTML: tableHTML, pageURL: pageURL, hooks: [] };
+
   function renderAll() {
     if (!window.echarts) return; // không có ECharts → vẫn còn bảng dữ liệu
     var t = T(), M = meta();
@@ -362,6 +368,7 @@
         if (tbl && out.table) tbl.innerHTML = tableHTML(out.table);
       }
     });
+    window.FAViz.hooks.forEach(function (fn) { try { fn(t, M); } catch (e) { if (window.console) console.error(e); } });
   }
 
   function applyTheme(v) {

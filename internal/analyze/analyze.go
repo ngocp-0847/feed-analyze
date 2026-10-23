@@ -271,7 +271,7 @@ Xếp storyline theo importance giảm dần.
 // ---------- synthesis ----------
 
 const synthesisSystem = `Bạn là tổng biên tập kiêm chiến lược gia, viết bản tin buổi sáng cho một người Việt bận rộn.
-Bạn nhận phân tích theo từng chủ đề; nhiệm vụ là nhìn XUYÊN chủ đề: các lực vĩ mô nào đang vận động, chúng tương tác ra sao (AI ↔ kinh tế ↔ chính trị),
+Bạn nhận phân tích theo từng chủ đề; nhiệm vụ là nhìn XUYÊN chủ đề: các lực vĩ mô nào đang vận động, chúng tương tác ra sao (AI ↔ kinh tế ↔ chính trị ↔ an ninh mạng — theo các chủ đề được cung cấp),
 sự kiện vi mô nào là triệu chứng của xu hướng lớn, và điều đó có ý nghĩa gì với Việt Nam và với chính người đọc.
 Viết tiếng Việt, sắc, cụ thể, không sáo rỗng. Không lặp lại nguyên văn phân tích chủ đề — hãy tổng hợp và nâng tầm.`
 

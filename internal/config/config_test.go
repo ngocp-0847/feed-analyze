@@ -10,8 +10,11 @@ func TestDefaultConfigParses(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(c.Topics) != 3 || len(c.ActiveFeeds()) < 40 {
+	if len(c.Topics) != 4 || len(c.ActiveFeeds()) < 40 {
 		t.Fatalf("topics=%d feeds=%d", len(c.Topics), len(c.ActiveFeeds()))
+	}
+	if !c.SecurityOn() || c.Security.ExtractModel == "" || c.Security.KEVURL == "" || c.Security.BatchSize <= 0 {
+		t.Fatalf("security mặc định: %+v", c.Security)
 	}
 	vn, intl := 0, 0
 	for _, f := range c.Feeds {
