@@ -107,6 +107,8 @@ func (s *Server) Handler() http.Handler {
 		})
 		mux.HandleFunc("POST /api/shutdown", s.shutdown)
 		mux.HandleFunc("GET /articles", s.articles)
+		mux.HandleFunc("GET /runs", s.runs)
+		mux.HandleFunc("GET /runs/{id}", s.runDetail)
 	}
 	mux.HandleFunc("GET /{$}", s.index)
 	mux.HandleFunc("GET /dashboard", s.dashboard)
@@ -528,7 +530,7 @@ const pageTpl = `<!doctype html>
 <a href="{{.Latest}}" class="nav {{if eq .Nav "daily"}}on{{end}}">Bản tin</a>
 <a href="/dashboard{{if .Public}}/{{end}}" class="nav {{if eq .Nav "dashboard"}}on{{end}}">Dashboard</a>
 <a href="/stories{{if .Public}}/{{end}}" class="nav {{if eq .Nav "stories"}}on{{end}}">Storyline</a>
-{{if not .Public}}<a href="/articles" class="nav {{if eq .Nav "articles"}}on{{end}}">Bài viết</a>{{end}}
+{{if not .Public}}<a href="/articles" class="nav {{if eq .Nav "articles"}}on{{end}}">Bài viết</a><a href="/runs" class="nav {{if eq .Nav "runs"}}on{{end}}">Lịch sử chạy</a>{{end}}
 <a href="/deep{{if .Public}}/{{end}}" class="nav {{if eq .Nav "deep"}}on{{end}}">Phân tích sâu</a>
 {{if .Security}}<a href="/security{{if .Public}}/{{end}}" class="nav {{if eq .Nav "security"}}on{{end}}">🛡️ An ninh mạng</a>{{end}}
 <span class="sp"></span>{{if .Public}}<a class="nav" href="/feed.xml" title="Theo dõi qua RSS/Atom">RSS</a>{{end}}<button id="theme-toggle" type="button" title="Đổi sáng/tối">◐</button></div></header>

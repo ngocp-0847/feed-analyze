@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"sync/atomic"
 	"time"
 
 	_ "modernc.org/sqlite"
@@ -62,7 +63,10 @@ CREATE TABLE IF NOT EXISTS llm_calls (
 );
 `
 
-type Store struct{ db *sql.DB }
+type Store struct {
+	db    *sql.DB
+	runID atomic.Int64 // run hiện hành của tiến trình này (0 = không có) — xem runs.go
+}
 
 func Open(path string) (*Store, error) {
 	db, err := sql.Open("sqlite", "file:"+path+"?_pragma=busy_timeout(10000)&_pragma=journal_mode(WAL)&_pragma=foreign_keys(0)")
@@ -70,8 +74,11 @@ func Open(path string) (*Store, error) {
 		return nil, err
 	}
 	db.SetMaxOpenConns(1) // SQLite: 1 writer — tránh SQLITE_BUSY khi phân loại song song
-	if _, err := db.Exec(schema + secSchema); err != nil {
+	if _, err := db.Exec(schema + secSchema + runSchema); err != nil {
 		return nil, fmt.Errorf("khởi tạo schema: %w", err)
+	}
+	if err := migrateRuns(db); err != nil {
+		return nil, fmt.Errorf("nâng cấp schema: %w", err)
 	}
 	return &Store{db: db}, nil
 }
@@ -624,8 +631,12 @@ func (s *Store) LogLLMCall(purpose, model string, cost float64, dur time.Duratio
 	if callErr != nil {
 		ok = 0
 	}
-	_, _ = s.db.Exec(`INSERT INTO llm_calls(ts,purpose,model,cost_usd,duration_ms,ok,err) VALUES(?,?,?,?,?,?,?)`,
-		time.Now().Unix(), purpose, model, cost, dur.Milliseconds(), ok, errStr)
+	var runID any // NULL khi gọi ngoài run được ghi nhận
+	if id := s.runID.Load(); id != 0 {
+		runID = id
+	}
+	_, _ = s.db.Exec(`INSERT INTO llm_calls(ts,purpose,model,cost_usd,duration_ms,ok,err,run_id) VALUES(?,?,?,?,?,?,?,?)`,
+		time.Now().Unix(), purpose, model, cost, dur.Milliseconds(), ok, errStr, runID)
 }
 
 type Stats struct {
