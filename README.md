@@ -120,6 +120,7 @@ Tắt server: `fa serve --stop`. Chạy foreground: `fa serve`. Địa chỉ: `w
 | `fa open <slug>` | Timeline 1 storyline, chuỗi tác động dạng sơ đồ |
 | `fa open deep <slug>` · `fa deep … --open` | **Dashboard phân tích sâu** + báo cáo |
 | `fa open security` | **Bản đồ mối đe doạ an ninh mạng** |
+| `fa open runs` · `fa open runs 12` | **Lịch sử chạy**: mỗi lần `daily`/`fetch`/`classify`/`analyze`/`deep`/`sec`/`publish` — trạng thái, thời gian, các bước, số lần gọi + chi phí Claude (chỉ bản cục bộ, không xuất bản) |
 | `fa open "<từ khoá>"` | Tìm bài |
 
 **Dashboard ngày** — KPI · *bản đồ storyline* (tầng vi/trung/vĩ mô × mức quan trọng, kích thước = số bài, màu = chủ đề) ·
@@ -210,7 +211,7 @@ Khung `micro-macro-lens` cũng được nhúng thẳng vào prompt phân tích t
 ```
 cmd/fa/                 CLI (dispatcher, các lệnh)
 internal/config         config.yaml + mặc định nhúng (default.yaml)
-internal/store          SQLite: articles, classifications, FTS5, storylines, reports, llm_calls
+internal/store          SQLite: articles, classifications, FTS5, storylines, reports, llm_calls, runs
 internal/feed           quét RSS/Atom song song (gofeed)
 internal/llm            wrapper `claude -p` (json / stream-json / interactive)
 internal/classify       phân loại batch

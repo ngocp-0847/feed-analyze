@@ -169,7 +169,7 @@ func atoiPos(s string) int {
 	return n
 }
 
-// resolveWebPath: "" → bản tin mới nhất · dashboard · security [N] · YYYY-MM-DD · stories · articles · deep [slug] · <slug storyline> · <từ khoá>.
+// resolveWebPath: "" → bản tin mới nhất · dashboard · runs [id] · security [N] · YYYY-MM-DD · stories · articles · deep [slug] · <slug storyline> · <từ khoá>.
 func resolveWebPath(a *app, pos []string) string {
 	if len(pos) == 0 {
 		return "/"
@@ -186,6 +186,11 @@ func resolveWebPath(a *app, pos []string) string {
 		return "/stories"
 	case first == "articles":
 		return "/articles"
+	case first == "runs" || first == "history":
+		if len(pos) > 1 && atoiPos(pos[1]) > 0 {
+			return fmt.Sprintf("/runs/%d", atoiPos(pos[1]))
+		}
+		return "/runs"
 	case first == "security" || first == "sec" || first == "threats":
 		if len(pos) > 1 && atoiPos(pos[1]) > 0 {
 			return fmt.Sprintf("/security/%d", atoiPos(pos[1]))

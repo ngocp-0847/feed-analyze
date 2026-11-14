@@ -247,25 +247,44 @@ func cmdDaily(a *app, args []string) (err error) {
 	start := time.Now()
 	logf("══ fa daily — %s ══", time.Now().In(a.cfg.Loc).Format("2006-01-02 15:04"))
 	if !*skipFetch {
-		if _, err := runFetch(a, ""); err != nil {
-			return err
+		fetchDone := a.step("fetch")
+		n, ferr := runFetch(a, "")
+		fetchDone(fmt.Sprintf("%d bài mới", n), ferr)
+		if ferr != nil {
+			return ferr
 		}
 	}
-	if err := runClassify(a, 2000); err != nil {
-		return err
+	classifyDone := a.step("classify")
+	pending := a.st.CountUnclassified()
+	cerr := runClassify(a, 2000)
+	classifyDone(fmt.Sprintf("%d bài chờ → còn %d chưa phân loại", pending, a.st.CountUnclassified()), cerr)
+	if cerr != nil {
+		return cerr
 	}
 	secOn := a.cfg.SecurityOn()
 	if secOn {
-		if serr := runSecUpdate(a, 7, false); serr != nil {
+		secDone := a.step("security")
+		serr := runSecUpdate(a, 7, false)
+		secDone("7 ngày gần nhất", serr)
+		if serr != nil {
 			logf("⚠ an ninh mạng: %v", serr)
 		}
 	}
 	if *noAnalyze {
 		return nil
 	}
+	analyzeDone := a.step("analyze")
 	path, err := runAnalyze(a, "", nil)
+	detail := ""
+	if path != "" {
+		detail = filepath.Base(path)
+	}
+	analyzeDone(detail, err)
 	if secOn && a.ctx.Err() == nil {
-		if serr := secBrief(a, 30); serr != nil {
+		briefDone := a.step("security-brief")
+		serr := secBrief(a, 30)
+		briefDone("30 ngày", serr)
+		if serr != nil {
 			logf("⚠ tổng hợp an ninh mạng: %v", serr)
 		}
 	}
@@ -279,10 +298,18 @@ func cmdDaily(a *app, args []string) (err error) {
 			}
 		}
 		if *pub || a.cfg.Publish.AfterDaily {
-			if _, perr := buildSite(a); perr != nil {
+			buildDone := a.step("publish-build")
+			_, perr := buildSite(a)
+			buildDone("", perr)
+			if perr != nil {
 				logf("⚠ build site lỗi: %v", perr)
-			} else if _, perr := deploySite(a); perr != nil {
-				logf("⚠ publish lỗi: %v", perr)
+			} else {
+				deployDone := a.step("publish-deploy")
+				_, derr := deploySite(a)
+				deployDone("", derr)
+				if derr != nil {
+					logf("⚠ publish lỗi: %v", derr)
+				}
 			}
 		}
 	}

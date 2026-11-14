@@ -297,3 +297,7 @@ table.actors small { color: var(--muted); }
 .stk p { margin: 6px 0; color: var(--ink-2); }
 .stk ul { margin: 4px 0; padding-left: 18px; }
 .stk .cv { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 4px; }
+/* lịch sử chạy */
+table.runs td small { color: var(--muted); margin-left: 4px; }
+table.runs td, table.runs th { white-space: nowrap; }
+table.runs td:nth-child(2) { white-space: normal; }

@@ -105,7 +105,7 @@ func main() {
 		}
 		defer a.st.Close()
 	}
-	if err := cmd.run(a, args[1:]); err != nil {
+	if err := a.runTracked(cmd, args[1:]); err != nil {
 		if errors.Is(err, flag.ErrHelp) {
 			return
 		}
